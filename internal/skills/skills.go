@@ -35,7 +35,8 @@ func Render(version string) string {
 	if version == "" {
 		version = "dev"
 	}
-	out := strings.ReplaceAll(template, versionMarker, version)
+	// LF everywhere, even if a checkout gave the embedded file CRLF.
+	out := strings.ReplaceAll(strings.ReplaceAll(template, "\r\n", "\n"), versionMarker, version)
 	contract.Ensure(strings.HasPrefix(out, "---\nname: "+Name+"\n"), "the skill starts with its frontmatter name")
 	return out
 }
