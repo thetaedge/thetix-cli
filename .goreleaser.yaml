@@ -1,0 +1,69 @@
+# Release build: `git tag vX.Y.Z && git push --tags` runs .github/workflows/release.yml.
+# Local dry run: goreleaser release --snapshot --clean
+version: 2
+project_name: thetix
+
+builds:
+  - id: thetix
+    main: .
+    binary: thetix
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+
+archives:
+  - id: thetix
+    ids: [thetix]
+    # scripts/install.sh and install.ps1 download exactly these names.
+    name_template: "thetix-{{ .Os }}-{{ .Arch }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: github-native
+
+release:
+  github:
+    owner: thetaedge
+    name: thetix-cli
+
+homebrew_casks:
+  - name: thetix
+    ids: [thetix]
+    binaries: [thetix]
+    repository:
+      owner: thetaedge
+      name: homebrew-tap
+      token: '{{ index .Env "HOMEBREW_TAP_TOKEN" }}'
+    homepage: https://thetix.ai
+    description: Thetix, the options intelligence platform, from the command line
+    hooks:
+      post:
+        # The binary is not notarized; clear the quarantine flag like install.sh does.
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/thetix"]
+          end
+    skip_upload: '{{ if index .Env "HOMEBREW_TAP_TOKEN" }}false{{ else }}true{{ end }}'
+
+scoops:
+  - name: thetix
+    ids: [thetix]
+    repository:
+      owner: thetaedge
+      name: scoop-bucket
+      token: '{{ index .Env "SCOOP_BUCKET_TOKEN" }}'
+    homepage: https://thetix.ai
+    description: Thetix, the options intelligence platform, from the command line
+    skip_upload: '{{ if index .Env "SCOOP_BUCKET_TOKEN" }}false{{ else }}true{{ end }}'
