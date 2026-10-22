@@ -74,13 +74,13 @@ func (a *app) loginCommand() *cobra.Command {
 		Long: "Connect thetix to your Thetix account. By default this opens Thetix in your browser to approve the\n" +
 			"CLI (new to Thetix? create your account on that page); the CLI then gets its own API key, named after\n" +
 			"this computer, which you can revoke in\n" +
-			"Profile > API Keys. With --api-key, thetix stores a key you created there instead (use - to read it\n" +
+			"Profile > Agent Access. With --api-key, thetix stores a key you created there instead (use - to read it\n" +
 			"from standard input). The server you log in to becomes the default.\n\n" +
 			"Permissions: a browser login asks for read (your accounts, market data, ideas, chats) and act\n" +
 			"(ask Thetix, change chats, cards, watchlist and settings). --allow trade adds staging trades,\n" +
 			"placing staged trades and cancelling orders; --allow admin adds the workspace, accounts,\n" +
 			"brokerage connections and API keys (irreversible changes still need your approval in Thetix).\n" +
-			"You decide on the consent page, and can change them later in Profile > API Keys.\n\n" +
+			"You decide on the consent page, and can change them later in Profile > Agent Access.\n\n" +
 			"No browser on this machine (SSH, a server)? --device shows a code to enter at thetix.ai/connect/device\n" +
 			"on any device instead.",
 		Args: cobra.NoArgs,
@@ -105,11 +105,11 @@ func (a *app) loginCommand() *cobra.Command {
 			}
 			if token != "" {
 				if !strings.HasPrefix(token, "te_") {
-					return fail(ExitUsage, "a Thetix API key starts with te_ (create one in Profile > API Keys)")
+					return fail(ExitUsage, "a Thetix API key starts with te_ (create one in Profile > Agent Access, under API keys)")
 				}
 				if len(allow) > 0 || readOnly || device {
 					return fail(ExitUsage, "a pasted API key has the permissions it was created with; "+
-						"change them in Profile > API Keys (--allow, --read-only and --device are for a sign-in)")
+						"change them in Profile > Agent Access (--allow, --read-only and --device are for a sign-in)")
 				}
 				method = config.AuthAPIKey
 			} else {
@@ -207,7 +207,7 @@ func (a *app) logoutCommand() *cobra.Command {
 				ctx, cancel := context.WithTimeout(cmd.Context(), 30*time.Second)
 				defer cancel()
 				if err := auth.Revoke(ctx, &http.Client{Timeout: 30 * time.Second}, creds.Server, account.Token); err != nil {
-					fmt.Fprintf(a.stderr, "thetix: could not revoke the key (%v); revoke it in Profile > API Keys.\n", err)
+					fmt.Fprintf(a.stderr, "thetix: could not revoke the key (%v); revoke it in Profile > Agent Access.\n", err)
 				}
 			}
 			delete(a.cfg.Accounts, creds.Server)
@@ -220,7 +220,7 @@ func (a *app) logoutCommand() *cobra.Command {
 			forgetTools(config.Credentials{Server: creds.Server, Token: account.Token})
 			fmt.Fprintf(a.stdout, "Logged out of %s.\n", creds.Server)
 			if account.Auth == config.AuthAPIKey {
-				fmt.Fprintln(a.stdout, "The API key itself is still active; revoke it in Profile > API Keys if you no longer need it.")
+				fmt.Fprintln(a.stdout, "The API key itself is still active; revoke it in Profile > Agent Access if you no longer need it.")
 			}
 			return nil
 		},

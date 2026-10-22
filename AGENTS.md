@@ -18,6 +18,8 @@ internal/remote/         MCP session over Streamable HTTP with a bearer token; p
 internal/auth/           OAuth 2.1 login: discovery, registration, loopback redirect, PKCE, revoke
 internal/config/         config file, server normalization, credential precedence
 internal/proxy/          `thetix mcp`: the remote tools served over stdio
+internal/skills/         `thetix skills`: the embedded SKILL.md (stamped with the version) and the
+                         agents' skills folders; install never overwrites a thetix skill it didn't write
 internal/contract/       Require / Ensure / Invariant
 scripts/                 install.sh, install.ps1 (download names match .goreleaser.yaml archives)
 ```

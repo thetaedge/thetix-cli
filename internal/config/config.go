@@ -35,7 +35,7 @@ type Account struct {
 	Auth  string `json:"auth"`
 	// Scope is the permissions the person granted at a browser login
 	// (space-separated, e.g. "read act trade"); empty for a pasted key. They
-	// can change later in Profile > API Keys; `thetix status` shows the live ones.
+	// can change later in Profile > Agent Access; `thetix status` shows the live ones.
 	Scope      string `json:"scope,omitempty"`
 	LastChatID string `json:"last_chat_id,omitempty"`
 }

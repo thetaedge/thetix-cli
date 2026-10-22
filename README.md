@@ -50,7 +50,7 @@ thetix login
 opens Thetix in your browser to approve the CLI, the same OAuth flow a connector uses. New to
 Thetix? Create your account on that page; it starts on the free plan, browsing Thetix's demo
 portfolio. The CLI then holds its own API key, named "Thetix CLI on <this computer> (connected app)",
-which you can revoke in **Profile > API Keys**. `thetix logout` revokes it.
+which you can revoke in **Profile > Agent Access**. `thetix logout` revokes it.
 
 No browser on this machine (SSH, a server)? `thetix login --device` prints a short code instead:
 open `thetix.ai/connect/device` on any device, sign in (or create your account), enter the code and
@@ -72,7 +72,7 @@ tools a connection may use):
 
 `thetix login` asks for `read` and `act`. Ask for more with `--allow trade`, `--allow trade,admin`
 or `--allow all`, or for less with `--read-only`. You decide on the consent page, and can change a
-connection's permissions anytime in **Profile > API Keys**. A pasted key has the permissions it was
+connection's permissions anytime in **Profile > Agent Access**. A pasted key has the permissions it was
 created with. `thetix status` and `thetix tools` show the permissions in use.
 
 ### Things you finish in Thetix
@@ -138,6 +138,7 @@ thetix login | logout | status       connect, disconnect, check
 thetix tools                         list the server's tools (refreshes the command list)
 thetix call <tool> [name=value ...]  call a tool by its MCP name, e.g. thetix call list_ideas days=7
 thetix mcp                           serve the tools over stdio (see below)
+thetix skills install                teach Claude Code, Codex, Cursor and others to use thetix
 thetix version | completion <shell>
 ```
 
@@ -163,11 +164,35 @@ cart.
 | 4 | network or protocol error, or `--timeout` passed |
 | 5 | a destructive tool refused without `--yes` |
 | 6 | waiting for you in Thetix (an approval, the trial's checkout, a brokerage sign-in); finish there, then rerun with the printed `--approval-id` or `--step-id` |
-| 7 | this connection lacks the permission the tool needs (`thetix login --allow ...`, or Profile > API Keys) |
+| 7 | this connection lacks the permission the tool needs (`thetix login --allow ...`, or Profile > Agent Access) |
 | 8 | your plan doesn't include this; the message says what does (usually `thetix start-free-trial`) |
 | 70 | internal contract violation (a bug in thetix; please report it) |
 
 A declined approval, or a step you cancelled, is a tool failure (1).
+
+## Coding agents
+
+`thetix skills install` teaches your coding agents to use thetix: it writes the Thetix skill (a
+[SKILL.md](https://agentskills.io)) where they look for skills, so they reach for `thetix` on finance,
+portfolio and trading tasks.
+
+| Agent | Skill folder |
+|---|---|
+| Claude Code | `~/.claude/skills/thetix` |
+| Codex, Cursor, Gemini CLI, OpenClaw | `~/.agents/skills/thetix` |
+| OpenCode (when installed) | `~/.config/opencode/skills/thetix` |
+| GitHub Copilot (when installed) | `~/.copilot/skills/thetix` |
+
+```
+thetix skills install                     # the agents above (Claude Code and the shared folder always)
+thetix skills install --agents claude     # only some: claude, agents, opencode, copilot, or all
+thetix skills install --project           # this repository's .claude/skills, .agents/skills, ...
+thetix skills list                        # what is installed where, and its version
+thetix skills uninstall
+```
+
+Run `thetix skills install` again after upgrading thetix: each release carries the skill for its own
+commands. A skill named `thetix` that thetix didn't write is left alone.
 
 ## Connecting MCP clients
 

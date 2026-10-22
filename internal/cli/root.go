@@ -226,7 +226,7 @@ func (a *app) rootCommand(ctx context.Context, args []string) *cobra.Command {
 	persistent.DurationVar(&a.timeout, "timeout", 10*time.Minute, "give up on a tool call after this long")
 
 	static := []*cobra.Command{a.loginCommand(), a.logoutCommand(), a.statusCommand(), a.toolsCommand(),
-		a.callCommand(), a.mcpCommand(), a.versionCommand()}
+		a.callCommand(), a.mcpCommand(), a.skillsCommand(), a.versionCommand()}
 	staticNames := map[string]bool{}
 	for _, cmd := range static {
 		staticNames[cmd.Name()] = true
@@ -520,7 +520,7 @@ func (a *app) run(ctx context.Context, tool string, args map[string]any) error {
 		if scope == "" {
 			scope = "<permission>"
 		}
-		return fail(ExitScope, "this connection lacks the %s permission: grant it in Thetix under Profile > API Keys, "+
+		return fail(ExitScope, "this connection lacks the %s permission: grant it in Thetix under Profile > Agent Access, "+
 			"or run `thetix login --allow %s`", scope, scope)
 	}
 	if action := planAction(result); action != "" {
@@ -768,7 +768,7 @@ func (a *app) callCommand() *cobra.Command {
 			}
 			if lacksScope {
 				return fail(ExitScope, "%s needs the %s permission, which this connection lacks: grant it in Thetix "+
-					"under Profile > API Keys, or run `thetix login --allow %s`", positional[0], scope, scope)
+					"under Profile > Agent Access, or run `thetix login --allow %s`", positional[0], scope, scope)
 			}
 			if tool == nil {
 				return fail(ExitUsage, "%s has no tool %q; run `thetix tools`", creds.Server, positional[0])

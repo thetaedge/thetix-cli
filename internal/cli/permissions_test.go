@@ -212,7 +212,7 @@ func TestApprovalPendingApprovedAndDenied(t *testing.T) {
 func TestMissingPermission(t *testing.T) {
 	loginAgent(t)
 	code, _, errOut := cli(t, "", "cancel-order")
-	if code != ExitScope || !strings.Contains(errOut, "thetix login --allow trade") || !strings.Contains(errOut, "Profile > API Keys") {
+	if code != ExitScope || !strings.Contains(errOut, "thetix login --allow trade") || !strings.Contains(errOut, "Profile > Agent Access") {
 		t.Fatalf("cancel-order: exit %d %q", code, errOut)
 	}
 }
@@ -242,7 +242,7 @@ func TestRequestedScopes(t *testing.T) {
 	}
 	isolate(t)
 	if code, _, errOut := cli(t, "", "login", "--api-key", goodToken, "--allow", "trade"); code != ExitUsage ||
-		!strings.Contains(errOut, "Profile > API Keys") {
+		!strings.Contains(errOut, "Profile > Agent Access") {
 		t.Fatalf("--allow with a pasted key: exit %d %q", code, errOut)
 	}
 }

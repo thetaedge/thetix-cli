@@ -4,7 +4,7 @@
 // their browser, catch the redirect on a loopback port (RFC 8252), and trade
 // the code and PKCE verifier (RFC 7636) for a token. The token is a Thetix
 // API key named after this computer; the person can revoke it in
-// Profile > API Keys.
+// Profile > Agent Access.
 package auth
 
 import (
