@@ -31,6 +31,11 @@ API.
 2. **Ask Thetix for analysis.** `thetix ask "<question>"` asks Thetix about the person's portfolio,
    the market or a strategy, and waits for the answer. `thetix ask --continue "<follow-up>"` keeps the
    same conversation. Pass `--account-id <id>` (from `thetix list-accounts`) to focus on one account.
+   While Thetix is still working on an answer (the output says so and gives the chat id), send the
+   person's extra context or change of mind with `thetix add-to-chat --chat-id <id> --message "<text>"`
+   (or `thetix ask --continue "<text>"`): Thetix reads it at its next step and the answer honours it.
+   Stop an answer with `thetix cancel-chat --chat-id <id>`. Cards work the same way:
+   `thetix add-to-card --card-id <id> --message "<change>"` and `thetix cancel-card --card-id <id>`.
 3. **Read the output.** It is written for you. Add `--json` for the full structured result when you
    need exact fields.
 4. **Never wait at a prompt.** Every choice is a flag. Destructive commands need `--yes`, which you
